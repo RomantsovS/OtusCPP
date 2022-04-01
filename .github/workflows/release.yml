@@ -24,13 +24,10 @@ jobs:
 
     - name: Build
       run: |
+        mkdir bin
         cd 01_Github_actions
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target test
-        cd ..
-        pwd
-        ls
-        mkdir bin
         cmake --build ${{github.workspace}}/bin --config ${{env.BUILD_TYPE}} --target package
         pwd
         ls
