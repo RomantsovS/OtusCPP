@@ -24,9 +24,13 @@ jobs:
         cd 01_Github_actions
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
+        pwd
+        ls
 
     - name: Build
       run: |
+        pwd
+        ls
         cmake --build .
         cmake --build . --target test
         cmake --build . --target package
