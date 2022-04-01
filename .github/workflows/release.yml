@@ -22,18 +22,18 @@ jobs:
         pwd
         ls
         cd 01_Github_actions
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
         pwd
         ls
 
     - name: Build
       run: |
+        cd 01_Github_actions
         pwd
         ls
-        cmake --build .
-        cmake --build . --target test
-        cmake --build . --target package
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target test
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target package
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
