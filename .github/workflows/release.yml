@@ -37,7 +37,7 @@ jobs:
     
     - name: zip linux artifact
       run: |
-        zip -r linux helloworld_cli
+        zip -r linux ${{github.workspace}}/build/helloworld_cli
     - name: upload linux artifact
       uses: actions/upload-artifact@v1
       with:
@@ -101,7 +101,7 @@ jobs:
       
     - name: zip win artifact
       run: |
-        powershell Compress-Archive helloworld_cli windows.zip 
+        powershell Compress-Archive ${{github.workspace}}/build/helloworld_cli windows.zip 
     - name: upload windows artifact
       uses: actions/upload-artifact@v1
       with:
