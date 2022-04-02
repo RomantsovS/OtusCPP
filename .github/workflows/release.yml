@@ -9,6 +9,61 @@ env:
   BUILD_TYPE: Release
 
 jobs:
+  upload-release:
+    runs-on: ubuntu-18.04
+    needs: [build-linux, build-windows]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: false
+    
+    - name: download artifacts
+      uses: actions/download-artifact@v1
+      with:
+        name: uploads
+    
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{github.workspace}}/build/helloworld-0.0.${{ github.run_number }}-Linux.deb
+        asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
+        asset_content_type: application/vnd.debian.binary-package
+        
+    - name: upload linux
+      id: upload-linux
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/linux.zip
+        asset_name: linux.zip
+        asset_content_type: application/zip
+        
+    - name: upload windows
+      id: upload-windows
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/windows.zip
+        asset_name: windows.zip
+        asset_content_type: application/zip
+    
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +89,10 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}}
-    
+      
+    - name: Package
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target package
+
     - name: zip linux artifact
       run: |
         zip -r linux ${{github.workspace}}/build/helloworld_cli
@@ -43,40 +101,14 @@ jobs:
       with:
         name: uploads
         path: linux.zip
-      
-    - name: Package
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target package
-      
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.run_number }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          release body
-        draft: false
-        prerelease: false
-    
-    - name: download artifacts
-      uses: actions/download-artifact@v1
+        
+    - name: upload linux artifact
+      uses: actions/upload-artifact@v1
       with:
         name: uploads
-    
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{github.workspace}}/build/helloworld-0.0.${{ github.run_number }}-Linux.deb
-        asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
-        asset_content_type: application/vnd.debian.binary-package
+        path: linux.zip
 
-  build-win:
+  build-windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -110,13 +142,8 @@ jobs:
         name: uploads
         path: windows.zip
         
-    - name: upload windows
-      id: upload-windows
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: upload windows artifact
+      uses: actions/upload-artifact@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/windows.zip
-        asset_name: windows.zip
-        asset_content_type: application/zip
+        name: uploads
+        path: windows.zip
