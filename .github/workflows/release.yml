@@ -65,14 +65,13 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
-    - run: sudo apt-get update && sudo apt-get install libboost-test-dev -y
       
     - name: Configure CMake
       run: |
         pwd
         ls
         cd 01_Github_actions
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=OFF
 
     - name: Build
       run: |
