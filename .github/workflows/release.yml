@@ -97,7 +97,7 @@ jobs:
       run: |
         pwd
         ls
-        zip -r linux-helloworld-0.0.${{ github.run_number }} ${{github.workspace}}/build/helloworld_cli
+        zip -r linux-helloworld-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/helloworld_cli
         pwd
         ls
         
