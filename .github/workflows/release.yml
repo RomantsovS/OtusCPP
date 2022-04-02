@@ -19,11 +19,15 @@ jobs:
       
     - name: Configure CMake
       run: |
+        pwd
+        ls
         cd 01_Github_actions
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
 
     - name: Build
       run: |
+        pwd
+        ls
         mkdir bin
         cd 01_Github_actions
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
