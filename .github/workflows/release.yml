@@ -101,7 +101,7 @@ jobs:
       
     - name: zip win artifact
       run: |
-        powershell Compress-Archive ${{github.workspace}}/build/helloworld_cli.exe windows.zip 
+        powershell Compress-Archive ${{github.workspace}}/build/${{env.BUILD_TYPE}}/helloworld_cli.exe windows.zip 
     - name: upload windows artifact
       uses: actions/upload-artifact@v1
       with:
