@@ -95,7 +95,11 @@ jobs:
 
     - name: zip linux artifact
       run: |
+        pwd
+        ls
         zip -r linux-helloworld-0.0.${{ github.run_number }} ${{github.workspace}}/build/helloworld_cli
+        pwd
+        ls
         
     - name: upload linux artifact zip
       uses: actions/upload-artifact@v1
