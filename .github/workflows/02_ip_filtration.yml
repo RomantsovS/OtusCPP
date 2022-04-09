@@ -1,4 +1,4 @@
-name: 01_github_actions
+name: 02_ip_filter
 
 on: [workflow_dispatch]
 
@@ -36,8 +36,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{github.workspace}}/uploads/helloworld-0.0.${{ github.run_number }}-Linux.deb
-        asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
+        asset_path: ${{github.workspace}}/uploads/io_filtration-0.0.${{ github.run_number }}-Linux.deb
+        asset_name: ip_filter-0.0.${{ github.run_number }}-Linux.deb
         asset_content_type: application/vnd.debian.binary-package
         
     - name: upload linux
@@ -47,8 +47,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/linux-helloworld-0.0.${{ github.run_number }}.zip
-        asset_name: linux-helloworld-0.0.${{ github.run_number }}.zip
+        asset_path: ./uploads/linux-ip_filter-0.0.${{ github.run_number }}.zip
+        asset_name: linux-ip_filter-0.0.${{ github.run_number }}.zip
         asset_content_type: application/zip
         
     - name: upload windows
@@ -58,8 +58,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/windows-helloworld-0.0.${{ github.run_number }}.zip
-        asset_name: windows-helloworld-0.0.${{ github.run_number }}.zip
+        asset_path: ./uploads/windows-ip_filter-0.0.${{ github.run_number }}.zip
+        asset_name: windows-ip_filter-0.0.${{ github.run_number }}.zip
         asset_content_type: application/zip
     
   build-linux:
@@ -74,14 +74,14 @@ jobs:
       run: |
         pwd
         ls
-        cd 01_Github_actions
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
+        cd 02_IP_filter
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
 
     - name: Build
       run: |
         pwd
         ls
-        cd 01_Github_actions
+        cd 02_IP_filter
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     
     - name: Test
@@ -95,7 +95,7 @@ jobs:
       run: |
         pwd
         ls
-        zip -r linux-helloworld-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/helloworld_cli
+        zip -r linux-ip_filter-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/ip_filter_cli
         pwd
         ls
         
@@ -103,45 +103,10 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: uploads
-        path: linux-helloworld-0.0.${{ github.run_number }}.zip
+        path: linux-ip_filter-0.0.${{ github.run_number }}.zip
   
     - name: upload linux artifact package
       uses: actions/upload-artifact@v1
       with:
         name: uploads
-        path: ${{github.workspace}}/build/helloworld-0.0.${{ github.run_number }}-Linux.deb
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-      
-    - name: Configure CMake
-      run: |
-        pwd
-        ls
-        cd 01_Github_actions
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=OFF
-
-    - name: Build
-      run: |
-        pwd
-        ls
-        cd 01_Github_actions
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-    
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}}
-      
-    - name: zip win artifact
-      run: |
-        powershell Compress-Archive ${{github.workspace}}/build/${{env.BUILD_TYPE}}/helloworld_cli.exe windows-helloworld-0.0.${{ github.run_number }}.zip
-        
-    - name: upload windows artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: uploads
-        path: windows-helloworld-0.0.${{ github.run_number }}.zip
+        path: ${{github.workspace}}/build/ip_filter-0.0.${{ github.run_number }}-Linux.deb
