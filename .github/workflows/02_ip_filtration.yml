@@ -72,15 +72,11 @@ jobs:
       
     - name: Configure CMake
       run: |
-        pwd
-        ls
         cd 02_IP_filter
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
 
     - name: Build
       run: |
-        pwd
-        ls
         cd 02_IP_filter
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     
@@ -93,11 +89,7 @@ jobs:
 
     - name: zip linux artifact
       run: |
-        pwd
-        ls
         zip -r linux-ip_filter-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/ip_filter
-        pwd
-        ls
         
     - name: upload linux artifact zip
       uses: actions/upload-artifact@v1
@@ -120,15 +112,11 @@ jobs:
       
     - name: Configure CMake
       run: |
-        pwd
-        ls
         cd 01_Github_actions
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=OFF
 
     - name: Build
       run: |
-        pwd
-        ls
         cd 01_Github_actions
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     
