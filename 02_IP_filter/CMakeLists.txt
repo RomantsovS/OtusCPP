@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.2)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(helloworld VERSION ${PROJECT_VESRION})
+project(ip_filter VERSION ${PROJECT_VESRION})
 
 option(WITH_GTEST "Whether to build google test" ON)
 
@@ -40,10 +40,10 @@ if(WITH_GTEST)
 endif()
 
 if (MSVC)
-    target_compile_options(helloworld_cli PRIVATE
+    target_compile_options(ip_filter PRIVATE
         /W4
     )
-    target_compile_options(helloworld PRIVATE
+    target_compile_options(ip_filter_lib PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
