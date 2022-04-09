@@ -110,3 +110,38 @@ jobs:
       with:
         name: uploads
         path: ${{github.workspace}}/build/ip_filter-0.0.${{ github.run_number }}-Linux.deb
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+      
+    - name: Configure CMake
+      run: |
+        pwd
+        ls
+        cd 01_Github_actions
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=OFF
+
+    - name: Build
+      run: |
+        pwd
+        ls
+        cd 01_Github_actions
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+      
+    - name: zip win artifact
+      run: |
+        powershell Compress-Archive ${{github.workspace}}/build/${{env.BUILD_TYPE}}/ip_filter.exe windows-ip_filter-0.0.${{ github.run_number }}.zip
+        
+    - name: upload windows artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: uploads
+        path: windows-ip_filter-0.0.${{ github.run_number }}.zip
