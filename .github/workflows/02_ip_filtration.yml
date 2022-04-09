@@ -95,7 +95,7 @@ jobs:
       run: |
         pwd
         ls
-        zip -r linux-ip_filter-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/ip_filter_cli
+        zip -r linux-ip_filter-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/ip_filter
         pwd
         ls
         
