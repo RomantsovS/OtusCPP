@@ -12,7 +12,7 @@ std::ostream& operator<<(std::ostream& out, const IP& ip);
 
 std::vector<IP> read_ip_pool(std::istream& in);
 
-void print_ip_pool(const std::vector<IP> ip_pool, std::ostream& out);
+void print_ip_pool(const std::vector<IP>& ip_pool, std::ostream& out);
 
 template <typename T>
 void sort_ip_pool(T begin, T end) {
@@ -21,6 +21,11 @@ void sort_ip_pool(T begin, T end) {
     });
 }
 
-std::vector<IP> ip_pool_filter(const std::vector<IP>& ip_pool, int val);
-std::vector<IP> ip_pool_filter(const std::vector<IP>& ip_pool, int val1, int val2);
-std::vector<IP> ip_pool_filter_any(const std::vector<IP>& ip_pool, int val);
+template <typename T>
+std::vector<IP> ip_pool_filter(const std::vector<IP>& ip_pool, T pred) {
+    std::vector<IP> res;
+    res.reserve(100);
+
+    std::copy_if(ip_pool.begin(), ip_pool.end(), std::back_inserter(res), pred);
+    return res;
+}

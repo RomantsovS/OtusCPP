@@ -28,6 +28,7 @@ std::vector<std::string> split(const std::string& str, char d) {
 
 std::vector<IP> read_ip_pool(std::istream& in) {
     std::vector<IP> res;
+    res.reserve(100);
 
     for (std::string line; std::getline(in, line);) {
         std::vector<std::string> v = split(line, '\t');
@@ -55,35 +56,8 @@ std::ostream& operator<<(std::ostream& out, const IP& ip) {
     return out;
 }
 
-void print_ip_pool(const std::vector<IP> ip_pool, std::ostream& out) {
+void print_ip_pool(const std::vector<IP>& ip_pool, std::ostream& out) {
     for (const auto& ip : ip_pool) {
         out << ip << '\n';
     }
-}
-
-std::vector<IP> ip_pool_filter(const std::vector<IP>& ip_pool, int val) {
-    std::vector<IP> res;
-
-    std::copy_if(ip_pool.begin(), ip_pool.end(), std::back_inserter(res), [val](const IP& ip){
-        return ip.v1 == val;
-    });
-    return res;
-}
-
-std::vector<IP> ip_pool_filter(const std::vector<IP>& ip_pool, int val1, int val2) {
-    std::vector<IP> res;
-
-    std::copy_if(ip_pool.begin(), ip_pool.end(), std::back_inserter(res), [val1, val2](const IP& ip){
-        return ip.v1 == val1 && ip.v2 == val2;
-    });
-    return res;
-}
-
-std::vector<IP> ip_pool_filter_any(const std::vector<IP>& ip_pool, int val) {
-    std::vector<IP> res;
-
-    std::copy_if(ip_pool.begin(), ip_pool.end(), std::back_inserter(res), [val](const IP& ip){
-        return ip.v1 == val || ip.v2 == val || ip.v3 == val || ip.v4 == val;
-    });
-    return res;
 }

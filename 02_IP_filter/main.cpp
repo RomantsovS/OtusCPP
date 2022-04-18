@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
 
 #include "ip_filter.h"
 
@@ -15,9 +14,7 @@ int main(int argc, char const *argv[]) {
     UNUSED(argv);
 
     try {
-        std::ifstream in("ip_filter.tsv");
-
-        std::vector<IP> ip_pool = read_ip_pool(in);
+        std::vector<IP> ip_pool = read_ip_pool(std::cin);
 
         // TODO reverse lexicographically sort
         sort_ip_pool(ip_pool.rbegin(), ip_pool.rend());
@@ -39,7 +36,7 @@ int main(int argc, char const *argv[]) {
         // 1.70.44.170
         // 1.29.168.152
         // 1.1.234.8
-        auto pool = ip_pool_filter(ip_pool, 1);
+        auto pool = ip_pool_filter(ip_pool, [](const IP &ip) { return ip.v1 == 1; });
         print_ip_pool(pool, std::cout);
 
         // TODO filter by first and second bytes and output
@@ -49,7 +46,7 @@ int main(int argc, char const *argv[]) {
         // 46.70.147.26
         // 46.70.113.73
         // 46.70.29.76
-        pool = ip_pool_filter(ip_pool, 46, 70);
+        pool = ip_pool_filter(ip_pool, [](const IP &ip) { return ip.v1 == 46 && ip.v2 == 70; });
         print_ip_pool(pool, std::cout);
 
         // TODO filter by any byte and output
@@ -89,7 +86,8 @@ int main(int argc, char const *argv[]) {
         // 46.49.43.85
         // 39.46.86.85
         // 5.189.203.46
-        pool = ip_pool_filter_any(ip_pool, 46);
+        pool = ip_pool_filter(
+            ip_pool, [](const IP &ip) { return ip.v1 == 46 || ip.v2 == 46 || ip.v3 == 46 || ip.v4 == 46; });
         print_ip_pool(pool, std::cout);
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
