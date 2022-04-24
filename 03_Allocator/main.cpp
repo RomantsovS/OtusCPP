@@ -40,6 +40,18 @@ int main() {
         for(auto val : v2) {
             std::cout << val << std::endl;
         }
+        v2.resize(5);
+        for(auto val : v2) {
+            std::cout << val << std::endl;
+        }
+        v2.resize(10);
+        for(auto val : v2) {
+            std::cout << val << std::endl;
+        }
+        Vector<int, std::allocator<int>> v3(3);
+        for(auto val : v3) {
+            std::cout << val << std::endl;
+        }
     }	
     {
         auto v = Vector<int, logging_allocator<int, 16>>{};
@@ -47,6 +59,25 @@ int main() {
             std::cout << "vector size = " << v.size() << std::endl;
             v.push_back(i);
             std::cout << std::endl;
+        }
+        for(auto val : v) {
+            std::cout << val << std::endl;
+        }
+        auto v2 = v;
+        for(auto val : v2) {
+            std::cout << val << std::endl;
+        }
+        v2.resize(5);
+        for(auto val : v2) {
+            std::cout << val << std::endl;
+        }
+        v2.resize(10);
+        for(auto val : v2) {
+            std::cout << val << std::endl;
+        }
+        Vector<int, std::allocator<int>> v3(3);
+        for(auto val : v3) {
+            std::cout << val << std::endl;
         }
     }
     

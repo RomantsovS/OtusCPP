@@ -30,7 +30,7 @@ if(WITH_GTEST)
 
     add_executable(tests tests.cpp lib.cpp)
 
-    set_target_properties(my_allocator PROPERTIES
+    set_target_properties(tests PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
     )

@@ -8,40 +8,33 @@ class Vector {
 
     Vector(size_t n, const Allocator& alloc = Allocator()) : allocator(alloc) {
         data = allocator.allocate(n);
-        
-        for(size_t i = 0; i < n; ++n) {
+
+        for (size_t i = 0; i < n; ++i) {
             allocator.construct(data + i);
         }
 
-        sz = n;
+        sz = cp = n;
     }
 
     Vector(const Vector& other) {
         data = allocator.allocate(other.sz);
-        
-        for(size_t i = 0; i < other.sz; ++i) {
+
+        for (size_t i = 0; i < other.sz; ++i) {
             allocator.construct(data + i, other.data[i]);
         }
-        
-        sz = other.sz;
-    }
 
-    void Swap(Vector& other) {
-        allocator.Swap(other.allocator);
-        std::swap(sz, other.sz);
+        sz = cp = other.sz;
     }
-
-    Vector(Vector&& other) { Swap(other); }
 
     ~Vector() = default;
 
     void reserve(size_t n) {
         if (n > cp) {
             auto data2 = allocator.allocate(n);
-            for(size_t i = 0; i < sz; ++i) {
+            for (size_t i = 0; i < sz; ++i) {
                 allocator.construct(data2 + i, data[i]);
             }
-            for(size_t i = 0; i < cp; ++i) {
+            for (size_t i = 0; i < cp; ++i) {
                 allocator.destroy(data + i);
             }
             data = data2;
@@ -52,9 +45,13 @@ class Vector {
     void resize(size_t n) {
         reserve(n);
         if (sz < n) {
-            std::uninitialized_value_construct_n(data + sz, n - sz);
+            for (size_t i = sz; i < n; ++i) {
+                allocator.construct(data + i, T());
+            }
         } else if (sz > n) {
-            allocator.destroy(data, sz - n);
+            for (size_t i = sz; i >= n; --i) {
+                allocator.destroy(data + i - 1);
+            }
         }
         sz = n;
     }
