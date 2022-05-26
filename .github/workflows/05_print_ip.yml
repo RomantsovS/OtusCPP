@@ -153,4 +153,3 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./doc/html
         publish_branch: gh-pages
-        destination_dir: docs
