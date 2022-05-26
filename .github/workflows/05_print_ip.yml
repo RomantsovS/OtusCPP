@@ -1,0 +1,158 @@
+name: 05_print_ip
+
+on: [workflow_dispatch]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  upload-release:
+    runs-on: ubuntu-latest
+    needs: [build-linux, build-windows]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: false
+    
+    - name: download artifacts
+      uses: actions/download-artifact@v1
+      with:
+        name: uploads
+    
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{github.workspace}}/uploads/print_ip-0.0.${{ github.run_number }}-Linux.deb
+        asset_name: print_ip-0.0.${{ github.run_number }}-Linux.deb
+        asset_content_type: application/vnd.debian.binary-package
+        
+    - name: upload linux
+      id: upload-linux
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/linux-print_ip-0.0.${{ github.run_number }}.zip
+        asset_name: linux-print_ip-0.0.${{ github.run_number }}.zip
+        asset_content_type: application/zip
+        
+    - name: upload windows
+      id: upload-windows
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/windows-print_ip-0.0.${{ github.run_number }}.zip
+        asset_name: windows-print_ip-0.0.${{ github.run_number }}.zip
+        asset_content_type: application/zip
+    
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+      
+    - name: Configure CMake
+      run: |
+        cd 05_print_ip
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
+
+    - name: Build
+      run: |
+        cd 05_print_ip
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+      
+    - name: Package
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target package
+
+    - name: zip linux artifact
+      run: |
+        zip -r linux-print_ip-0.0.${{ github.run_number }}.zip ${{github.workspace}}/build/print_ip
+        
+    - name: upload linux artifact zip
+      uses: actions/upload-artifact@v1
+      with:
+        name: uploads
+        path: linux-print_ip-0.0.${{ github.run_number }}.zip
+  
+    - name: upload linux artifact package
+      uses: actions/upload-artifact@v1
+      with:
+        name: uploads
+        path: ${{github.workspace}}/build/print_ip-0.0.${{ github.run_number }}-Linux.deb
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+      
+    - name: Configure CMake
+      run: |
+        cd 05_print_ip
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=OFF
+
+    - name: Build
+      run: |
+        cd 05_print_ip
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+      
+    - name: zip win artifact
+      run: |
+        powershell Compress-Archive ${{github.workspace}}/build/${{env.BUILD_TYPE}}/print_ip.exe windows-print_ip-0.0.${{ github.run_number }}.zip
+        
+    - name: upload windows artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: uploads
+        path: windows-print_ip-0.0.${{ github.run_number }}.zip
+
+  build-documentation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    # Build the HTML documentation
+    - name: Doxygen Action
+      uses: mattnotmitt/doxygen-action@v1.9.2
+      with:
+          doxyfile-path: ./Doxyfile
+          working-directory: ./05_print_ip
+    
+    # Deploy the HTML documentation to GitHub Pages
+    - name: GH Pages Deployment
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./doc/html/
+        enable_jekyll: false
+        allow_empty_commit: false
+        force_orphan: true
+        publish_branch: gh-pages
