@@ -144,7 +144,7 @@ jobs:
       uses: mattnotmitt/doxygen-action@v1.9.2
       with:
           doxyfile-path: ./Doxyfile
-          working-directory: ./05_Print_IP
+          working-directory: .
     
     # Deploy the HTML documentation to GitHub Pages
     - name: GH Pages Deployment
