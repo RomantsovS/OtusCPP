@@ -71,12 +71,12 @@ jobs:
       
     - name: Configure CMake
       run: |
-        cd 05_print_ip
+        cd 05_Print_IP
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
 
     - name: Build
       run: |
-        cd 05_print_ip
+        cd 05_Print_IP
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     
     - name: Test
@@ -111,12 +111,12 @@ jobs:
       
     - name: Configure CMake
       run: |
-        cd 05_print_ip
+        cd 05_Print_IP
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=OFF
 
     - name: Build
       run: |
-        cd 05_print_ip
+        cd 05_Print_IP
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     
     - name: Test
