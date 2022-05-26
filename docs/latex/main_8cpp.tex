@@ -1,0 +1,62 @@
+\hypertarget{main_8cpp}{}\doxysection{05\+\_\+\+Print\+\_\+\+IP/main.cpp File Reference}
+\label{main_8cpp}\index{05\_Print\_IP/main.cpp@{05\_Print\_IP/main.cpp}}
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$iterator$>$}\newline
+{\ttfamily \#include $<$list$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$string\+\_\+view$>$}\newline
+{\ttfamily \#include $<$tuple$>$}\newline
+{\ttfamily \#include $<$type\+\_\+traits$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+Include dependency graph for main.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structis__container}{is\+\_\+container$<$ T $>$}}
+\item 
+struct \mbox{\hyperlink{structis__container_3_01std_1_1vector_3_01_t_01_4_01_4}{is\+\_\+container$<$ std\+::vector$<$ T $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structis__container_3_01std_1_1list_3_01_t_01_4_01_4}{is\+\_\+container$<$ std\+::list$<$ T $>$ $>$}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T , typename std\+::enable\+\_\+if$<$ std\+::is\+\_\+integral$<$ T $>$\+::value, void $>$\+::type $\ast$  = nullptr$>$ }\\void \mbox{\hyperlink{main_8cpp_abe97cff6183f2aee8fd702d9c29dda41}{print\+\_\+ip}} (T val)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \mbox{\hyperlink{main_8cpp_ad822990c9a8bec94025f5edf1dba0f47}{print\+\_\+ip}} (tuple$<$ T, T, T, T $>$ val)
+\item 
+int \mbox{\hyperlink{main_8cpp_abf9e6b7e6f15df4b525a2e7705ba3089}{main}} (int argc, char const $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8cpp_abf9e6b7e6f15df4b525a2e7705ba3089}\label{main_8cpp_abf9e6b7e6f15df4b525a2e7705ba3089}} 
+\index{main.cpp@{main.cpp}!main@{main}}
+\index{main@{main}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char const $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{main_8cpp_abe97cff6183f2aee8fd702d9c29dda41}\label{main_8cpp_abe97cff6183f2aee8fd702d9c29dda41}} 
+\index{main.cpp@{main.cpp}!print\_ip@{print\_ip}}
+\index{print\_ip@{print\_ip}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{print\_ip()}{print\_ip()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T , typename std\+::enable\+\_\+if$<$ std\+::is\+\_\+integral$<$ T $>$\+::value, void $>$\+::type $\ast$  = nullptr$>$ \\
+void print\+\_\+ip (\begin{DoxyParamCaption}\item[{T}]{val }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{main_8cpp_ad822990c9a8bec94025f5edf1dba0f47}\label{main_8cpp_ad822990c9a8bec94025f5edf1dba0f47}} 
+\index{main.cpp@{main.cpp}!print\_ip@{print\_ip}}
+\index{print\_ip@{print\_ip}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{print\_ip()}{print\_ip()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void print\+\_\+ip (\begin{DoxyParamCaption}\item[{tuple$<$ T, T, T, T $>$}]{val }\end{DoxyParamCaption})}
+
