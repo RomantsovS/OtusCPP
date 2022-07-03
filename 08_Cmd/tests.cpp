@@ -14,7 +14,10 @@ bulk: cmd4, cmd5
 )";
 
         BlockProcessor bp(3);
-        bp.RunCmds(is, os);
+        BlockPrinter bpr(&bp, os);
+        BlockSaver bs(&bp);
+
+        bp.RunCmds(is);
 
         EXPECT_EQ(os.str(), expected);
     }
@@ -49,7 +52,10 @@ bulk: cmd5, cmd6, cmd7, cmd8, cmd9
 )";
 
         BlockProcessor bp(3);
-        bp.RunCmds(is, os);
+        BlockPrinter bpr(&bp, os);
+        BlockSaver bs(&bp);
+
+        bp.RunCmds(is);
 
         EXPECT_EQ(os.str(), expected);
     }
