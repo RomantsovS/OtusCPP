@@ -17,11 +17,11 @@ class Importer : public IImporter {
 class IExporter {
    public:
     virtual ~IExporter() {}
-    virtual void SaveData(std::vector<std::unique_ptr<IPrimitive>>& primitives) = 0;
+    virtual void SaveData(const std::vector<std::unique_ptr<IPrimitive>>& primitives) = 0;
 };
 
 class Exporter : public IExporter {
    public:
     Exporter(const std::filesystem::path&) {}
-    void SaveData(std::vector<std::unique_ptr<IPrimitive>>&) override {}
+    void SaveData(const std::vector<std::unique_ptr<IPrimitive>>&) override {}
 };
