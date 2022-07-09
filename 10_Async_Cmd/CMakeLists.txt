@@ -9,6 +9,7 @@ project(${THIS_PROJECT} VERSION ${PROJECT_VESRION})
 option(WITH_GTEST "Whether to build google test" ON)
 
 add_executable(${THIS_PROJECT} main.cpp)
+add_library(printersaverlib BlockPrinter.cpp BlockSaver.cpp)
 
 set_target_properties(${THIS_PROJECT} PROPERTIES
     CXX_STANDARD 17
@@ -17,6 +18,8 @@ set_target_properties(${THIS_PROJECT} PROPERTIES
 
 target_include_directories(${THIS_PROJECT} PRIVATE "${CMAKE_BINARY_DIR}")
 
+target_link_libraries(${THIS_PROJECT} PRIVATE printersaverlib)
+
 if (MSVC)
     set(MY_COMLILE_OPTIONS /W4)
 else ()
@@ -24,6 +27,7 @@ else ()
 endif()
 
 target_compile_options(${THIS_PROJECT} PRIVATE ${MY_COMLILE_OPTIONS})
+target_compile_options(printersaverlib PRIVATE ${MY_COMLILE_OPTIONS})
 
 if(WITH_GTEST)
     include(FetchContent)
@@ -43,19 +47,9 @@ if(WITH_GTEST)
     CXX_STANDARD_REQUIRED ON
     )
 
-    target_link_libraries(tests gtest_main)
+    target_link_libraries(tests gtest_main printersaverlib)
     target_compile_options(tests PRIVATE ${MY_COMLILE_OPTIONS})
 
     include(GoogleTest)
     gtest_discover_tests(tests)
-endif()
-
-if (MSVC)
-    target_compile_options(${THIS_PROJECT} PRIVATE
-        /W4
-    )
-else ()
-    target_compile_options(${THIS_PROJECT} PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
 endif()
