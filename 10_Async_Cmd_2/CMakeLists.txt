@@ -3,13 +3,15 @@ cmake_minimum_required(VERSION 3.2)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-set(THIS_PROJECT bulk)
+set(THIS_PROJECT async_cli)
 project(${THIS_PROJECT} VERSION ${PROJECT_VESRION})
 
 option(WITH_GTEST "Whether to build google test" ON)
 
+add_library(async SHARED async.cpp async.h BlockProcessor.cpp BlockPrinter.cpp BlockSaver.cpp)
+
 add_executable(${THIS_PROJECT} main.cpp)
-add_library(printersaverlib BlockPrinter.cpp BlockSaver.cpp)
+target_link_libraries(${THIS_PROJECT} async)
 
 set_target_properties(${THIS_PROJECT} PROPERTIES
     CXX_STANDARD 17
@@ -18,8 +20,6 @@ set_target_properties(${THIS_PROJECT} PROPERTIES
 
 target_include_directories(${THIS_PROJECT} PRIVATE "${CMAKE_BINARY_DIR}")
 
-target_link_libraries(${THIS_PROJECT} PRIVATE printersaverlib)
-
 if (MSVC)
     set(MY_COMLILE_OPTIONS /W4 /WX)
 else ()
@@ -27,7 +27,7 @@ else ()
 endif()
 
 target_compile_options(${THIS_PROJECT} PRIVATE ${MY_COMLILE_OPTIONS})
-target_compile_options(printersaverlib PRIVATE ${MY_COMLILE_OPTIONS})
+target_compile_options(async PRIVATE ${MY_COMLILE_OPTIONS})
 
 if(WITH_GTEST)
     include(FetchContent)
@@ -47,7 +47,7 @@ if(WITH_GTEST)
     CXX_STANDARD_REQUIRED ON
     )
 
-    target_link_libraries(tests gtest_main printersaverlib)
+    target_link_libraries(tests gtest_main async)
     target_compile_options(tests PRIVATE ${MY_COMLILE_OPTIONS})
 
     include(GoogleTest)

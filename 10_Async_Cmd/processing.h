@@ -46,7 +46,7 @@ class BlockProcessor : public Observable {
                     cmds_.clear();
                 }
             }
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            // std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         if (block_level == 0) {
             notify(update_events::event_print_save, {cmds_.begin(), cmds_.end()});
