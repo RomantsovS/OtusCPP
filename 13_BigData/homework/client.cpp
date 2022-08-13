@@ -26,7 +26,7 @@
 int main() {
     std::ifstream fin("emails.txt");
     std::filesystem::path output("./Testing/");
-    std::cout << "min prefix: " << calc_min_prefix(fin, output) << "\n";
+    std::cout << "min prefix: " << calc_min_prefix(fin, output, 3, 2) << "\n";
 
     return 0;
 }
