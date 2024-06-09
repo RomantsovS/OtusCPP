@@ -11,6 +11,9 @@ BlockProcessor::~BlockProcessor() {
 }
 
 void BlockProcessor::AddTask(const std::string cmd) {
+    if (m_stopped) {
+        throw std::runtime_error("call add task on stopped block processor");
+    }
     std::unique_lock<std::mutex> lock(m_mutex);
     tasks.push({std::move(cmd)});
     // std::cout << std::this_thread::get_id() << " BlockProcessor notify_one on update\n";
@@ -46,7 +49,8 @@ void BlockProcessor::do_work() {
             // std::cout << std::this_thread::get_id() << " BlockProcessor do_work awaken with " << tasks.size()
             //           << " and stopped=" << m_stopped << std::endl;
 
-            if (m_stopped && tasks.empty()) return;
+            if (m_stopped && tasks.empty())
+                return;
 
             task = std::move(tasks.front());
             tasks.pop();
@@ -60,7 +64,7 @@ void BlockProcessor::do_work() {
     }
 }
 
-void BlockProcessor::RunCmds(std::istream& is) {
+void BlockProcessor::RunCmds(std::istream &is) {
     std::string cmd;
     size_t block_start_index = 0;
 

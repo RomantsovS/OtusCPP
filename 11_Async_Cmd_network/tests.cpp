@@ -21,7 +21,7 @@ bulk: cmd4, cmd5
 
         Server server(io_context, 7900, bp);
 
-        std::thread([&io_context] { io_context.run(); }).detach();
+        std::thread io_thread([&io_context] { io_context.run(); });
 
         std::thread([] {
             std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -33,8 +33,10 @@ bulk: cmd4, cmd5
             io_context_client.run();
         }).join();
 
+        std::this_thread::sleep_for(std::chrono::seconds(3)); // to receive commands
         bp.Stop();
-        std::this_thread::sleep_for(std::chrono::seconds(3));
+        io_context.stop();
+        io_thread.join();
 
         EXPECT_EQ(os.str(), expected);
     }
@@ -56,7 +58,7 @@ bulk: cmd5, cmd6, cmd7, cmd8, cmd9
 
         Server server(io_context, 7901, bp);
 
-        std::thread([&io_context] { io_context.run(); }).detach();
+        std::thread io_thread([&io_context] { io_context.run(); });
 
         std::thread([] {
             std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -85,7 +87,10 @@ cmd11)"};
             io_context_client.run();
         }).join();
 
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // to receive commands
         bp.Stop();
+        io_context.stop();
+        io_thread.join();
 
         EXPECT_EQ(os.str(), expected);
     }
@@ -101,7 +106,7 @@ TEST(TestAll, Test3) {
 
         Server server(io_context, 7902, bp);
 
-        std::thread([&io_context] { io_context.run(); }).detach();
+        std::thread io_thread([&io_context] { io_context.run(); });
 
         std::thread([] {
             std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -124,7 +129,8 @@ TEST(TestAll, Test3) {
         }).detach();
 
         std::this_thread::sleep_for(std::chrono::seconds(10));
-
         bp.Stop();
+        io_context.stop();
+        io_thread.join();
     }
 }

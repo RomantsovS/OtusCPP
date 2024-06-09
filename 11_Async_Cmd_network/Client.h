@@ -2,36 +2,41 @@
 
 #include <array>
 #include <boost/asio.hpp>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
 
+#include "Logger.h"
+
 namespace ba = boost::asio;
 
 class AsyncClient {
-   public:
+public:
     AsyncClient(ba::io_context &io_context, short port, std::vector<std::string> str)
-        : m_resolver{io_context}, m_tcp_socket{io_context}, m_str(std::move(str)) {
+        : m_resolver{io_context},
+          m_tcp_socket{io_context},
+          m_str(std::move(str)) {
         ba::ip::tcp::endpoint ep(ba::ip::address::from_string("127.0.0.1"), port);
 
         m_tcp_socket.async_connect(ep, [&](const boost::system::error_code &erc) {
-            // std::cout << std::this_thread::get_id() << " run connectHandler\n";
-            this->connectHandler(erc);
+            connectHandler(erc);
         });
     }
 
-   private:
+private:
     void connectHandler(const boost::system::error_code &ec) {
-        // std::cout << std::this_thread::get_id() << " connectHandler\n";
+        Logger::getLogger().log("cli: connectHandler");
         if (ec) {
-            std::cout << "connectHandler - failed! err = " << ec.message() << std::endl;
+            Logger::getLogger().log("cli: connectHandler - failed! err = ", ec.message());
             return;
         }
 
         for (auto &str : m_str) {
+            // std::this_thread::sleep_for(std::chrono::seconds(1));
+            Logger::getLogger().log("cli: send ", str);
             ba::write(m_tcp_socket, ba::buffer(str));
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         boost::system::error_code erc;
         m_tcp_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, erc);
