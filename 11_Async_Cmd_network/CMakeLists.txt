@@ -38,6 +38,11 @@ else ()
     set(MY_COMLILE_OPTIONS -Wall -Wextra -pedantic -Werror -Wshadow -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC)
 endif()
 
+if(WIN32)
+    target_link_libraries(server_lib wsock32 ws2_32)
+    target_link_libraries(client wsock32 ws2_32)
+endif()
+
 target_compile_options(server PRIVATE ${MY_COMLILE_OPTIONS})
 target_compile_options(client PRIVATE ${MY_COMLILE_OPTIONS})
 
