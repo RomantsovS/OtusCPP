@@ -20,7 +20,7 @@ public:
     }
 
 private:
-    Logger() : ofs("log.log", std::ios::out | std::ios::app) {
+    Logger() : ofs("log.log", std::ios::out) {
         std::cout << __PRETTY_FUNCTION__ << std ::endl;
     }
     std::ofstream ofs;

@@ -15,7 +15,7 @@ bulk: cmd4, cmd5
 
         BlockProcessor bp(3);
         BlockPrinter bpr(os, &bp);
-        BlockSaver bs(&bp, 1);
+        // BlockSaver bs(&bp, 1);
 
         boost::asio::io_context io_context;
 
@@ -27,16 +27,17 @@ bulk: cmd4, cmd5
             std::this_thread::sleep_for(std::chrono::seconds(1));
             ba::io_context io_context_client;
 
-            std::vector<std::string> str = {"cmd1\ncmd2\ncmd3\ncmd4\ncmd5"};
+            std::vector<std::string> str = {"cmd1\n", "cmd2\n", "cmd3\n", "cmd4\n", "cmd5\n"};
 
             AsyncClient client(io_context_client, 7900, std::move(str));
             io_context_client.run();
         }).join();
 
-        std::this_thread::sleep_for(std::chrono::seconds(3)); // to receive commands
+        std::this_thread::sleep_for(std::chrono::milliseconds(10)); // to receive commands
         bp.Stop();
         io_context.stop();
         io_thread.join();
+        bpr.Stop();
 
         EXPECT_EQ(os.str(), expected);
     }
@@ -52,7 +53,7 @@ bulk: cmd5, cmd6, cmd7, cmd8, cmd9
 
         BlockProcessor bp(3);
         BlockPrinter bpr(os, &bp);
-        BlockSaver bs(&bp, 1);
+        // BlockSaver bs(&bp, 1);
 
         boost::asio::io_context io_context;
 
@@ -91,6 +92,7 @@ cmd11)"};
         bp.Stop();
         io_context.stop();
         io_thread.join();
+        bpr.Stop();
 
         EXPECT_EQ(os.str(), expected);
     }
@@ -98,9 +100,10 @@ cmd11)"};
 
 TEST(TestAll, Test3) {
     {
+        std::ostringstream os;
         BlockProcessor bp(3);
-        BlockPrinter bpr(std::cout, &bp);
-        BlockSaver bs(&bp, 1);
+        BlockPrinter bpr(os, &bp);
+        // BlockSaver bs(&bp, 1);
 
         boost::asio::io_context io_context;
 
@@ -112,7 +115,7 @@ TEST(TestAll, Test3) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             ba::io_context io_context_client;
 
-            std::vector<std::string> str = {"0", "1", "2", "3", "4", "5"};
+            std::vector<std::string> str = {"0\n", "1\n", "2\n", "3\n", "4\n", "5\n"};
 
             AsyncClient client(io_context_client, 7902, std::move(str));
             io_context_client.run();
@@ -122,15 +125,20 @@ TEST(TestAll, Test3) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             ba::io_context io_context_client;
 
-            std::vector<std::string> str = {"10", "11", "12", "13", "14", "15"};
+            std::vector<std::string> str = {"10\n", "11\n", "12\n", "13\n", "14\n", "15\n"};
 
             AsyncClient client(io_context_client, 7902, std::move(str));
             io_context_client.run();
         }).detach();
 
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        std::this_thread::sleep_for(std::chrono::seconds(3));
         bp.Stop();
         io_context.stop();
         io_thread.join();
+        bpr.Stop();
+
+        auto str = os.str();
+        std::cout << str;
+        EXPECT_EQ(str.size(), 62);
     }
 }

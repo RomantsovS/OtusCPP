@@ -1,6 +1,7 @@
 #include "BlockPrinter.h"
+#include "Logger.h"
 
-BlockPrinter::BlockPrinter(std::ostream& os, Observable* bp) : m_os(os), m_stopped(false) {
+BlockPrinter::BlockPrinter(std::ostream &os, Observable *bp) : m_os(os), m_stopped(false) {
     // std::cout << std::this_thread::get_id() << " BlockPrinter()\n";
     m_thread = std::thread(&BlockPrinter::do_work, this);
     if (bp) {
@@ -14,7 +15,8 @@ BlockPrinter::~BlockPrinter() {
 }
 
 void BlockPrinter::update(update_events event, std::vector<std::string> cmds) {
-    if (event == update_events::event_save) return;
+    if (event == update_events::event_save)
+        return;
 
     std::unique_lock<std::mutex> lock(m_mutex);
     tasks.push({std::move(cmds)});
@@ -24,7 +26,7 @@ void BlockPrinter::update(update_events event, std::vector<std::string> cmds) {
 
 void BlockPrinter::Stop() {
     if (!m_stopped) {
-        // std::cout << std::this_thread::get_id() << " BlockPrinter stop\n";
+        Logger::getLogger().log("srv: BlockPrinter stop");
         m_stopped = true;
         m_cv.notify_one();
         m_thread.join();
@@ -47,13 +49,16 @@ void BlockPrinter::do_work() {
             // std::cout << std::this_thread::get_id() << " BlockPrinter do_work awaken with " << tasks.size()
             //           << " and stopped=" << m_stopped << std::endl;
 
-            if (m_stopped && tasks.empty()) return;
+            if (m_stopped && tasks.empty())
+                return;
 
             task = std::move(tasks.front());
             tasks.pop();
         }
 
-        // std::cout << std::this_thread::get_id() << " do_work print_cmds\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        Logger::getLogger().log("srv: BlockPrinter do_work print_cmds size:", task.cmds.size());
 
         m_os << "bulk: ";
         print_cmds(task.cmds);
@@ -61,10 +66,11 @@ void BlockPrinter::do_work() {
     }
 }
 
-void BlockPrinter::print_cmds(const std::vector<std::string>& cmds) const {
+void BlockPrinter::print_cmds(const std::vector<std::string> &cmds) const {
     bool first = true;
-    for (const auto& cmd : cmds) {
-        if (!first) m_os << ", ";
+    for (const auto &cmd : cmds) {
+        if (!first)
+            m_os << ", ";
         m_os << cmd;
         first = false;
     }

@@ -1,4 +1,5 @@
 #include "BlockProcessor.h"
+#include "Logger.h"
 
 BlockProcessor::BlockProcessor(size_t sz) : sz_(sz), m_stopped(false) {
     // std::cout << std::this_thread::get_id() << " BlockProcessor()\n";
@@ -22,7 +23,7 @@ void BlockProcessor::AddTask(const std::string cmd) {
 
 void BlockProcessor::Stop() {
     if (!m_stopped) {
-        // std::cout << std::this_thread::get_id() << " BlockProcessor stop\n";
+        Logger::getLogger().log("srv: BlockProcessor stop");
         m_stopped = true;
         m_cv.notify_one();
         m_thread.join();
@@ -56,7 +57,7 @@ void BlockProcessor::do_work() {
             tasks.pop();
         }
 
-        // std::cout << std::this_thread::get_id() << " BlockProcessor do_work RunCmds\n";
+        Logger::getLogger().log("srv: BlockProcessor do_work RunCmds", task.cmds);
 
         std::istringstream iss(task.cmds);
 
